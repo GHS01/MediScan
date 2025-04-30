@@ -1,0 +1,428 @@
+/* HomeGuide.css - Estilos para la página de inicio con guía paso a paso */
+
+.home-guide-page {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  overflow-x: hidden;
+}
+
+.home-guide-page .btn-primary {
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 120, 215, 0.3);
+}
+
+.home-guide-page .btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 120, 215, 0.4);
+}
+
+/* Sección de bienvenida */
+.welcome-section {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(240,249,255,0.9) 100%);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: 3rem;
+}
+
+.home-guide-page .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.welcome-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.welcome-subtitle {
+  font-size: 1.3rem;
+  color: var(--text-color);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.welcome-description {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  color: var(--text-light);
+}
+
+.welcome-image {
+  position: relative;
+  z-index: 1;
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+/* Sección de cómo usar */
+.how-to-section {
+  padding: 4rem 0;
+  background-color: #fff;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  margin-bottom: 2rem;
+}
+
+.steps-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 1.5rem;
+}
+
+.step-card {
+  flex: 1;
+  min-width: 280px;
+  background-color: #fff;
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  box-shadow: var(--box-shadow);
+  position: relative;
+  transition: var(--transition);
+  border: 1px solid rgba(0, 120, 215, 0.1);
+}
+
+.step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-light);
+}
+
+.step-number {
+  position: absolute;
+  top: -15px;
+  left: 20px;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 120, 215, 0.3);
+}
+
+.step-icon {
+  margin-bottom: 1.5rem;
+  color: var(--primary-color);
+  font-size: 2rem;
+}
+
+.step-icon .icon {
+  font-size: 2rem;
+  color: var(--primary-color);
+}
+
+.step-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.step-description {
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.step-tip {
+  background-color: rgba(0, 120, 215, 0.05);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.tip-icon {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  margin-top: 0.2rem;
+}
+
+.step-tip p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.step-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-light);
+  font-size: 1.5rem;
+  padding: 0 1rem;
+}
+
+.step-connector svg {
+  color: var(--primary-light);
+  font-size: 1.5rem;
+}
+
+/* Sección de funcionalidades principales */
+.features-overview {
+  padding: 4rem 0;
+  background-color: rgba(0, 120, 215, 0.03);
+  margin-bottom: 3rem;
+  border-radius: var(--border-radius);
+}
+
+.feature-overview-card {
+  background-color: #fff;
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  height: 100%;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 120, 215, 0.1);
+}
+
+.feature-overview-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-light);
+}
+
+.feature-overview-icon {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+}
+
+.feature-overview-icon svg {
+  font-size: 2rem;
+  color: var(--primary-color);
+}
+
+.feature-overview-card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.feature-overview-card p {
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.feature-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  transition: var(--transition);
+}
+
+.feature-link:hover {
+  color: var(--primary-dark);
+}
+
+.feature-link svg {
+  margin-left: 0.5rem;
+}
+
+/* Sección de consejos rápidos */
+.quick-tips {
+  padding: 4rem 0;
+  margin-bottom: 3rem;
+}
+
+.tip-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background-color: #fff;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 1.5rem;
+  transition: var(--transition);
+  border: 1px solid rgba(0, 120, 215, 0.1);
+}
+
+.tip-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-light);
+}
+
+.tip-icon {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  margin-top: 0.2rem;
+}
+
+.tip-icon svg {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+}
+
+.tip-content {
+  flex: 1;
+}
+
+.tip-content h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.tip-content p {
+  color: var(--text-light);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Sección de comenzar */
+.get-started-section {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+  border-radius: var(--border-radius);
+  margin-bottom: 3rem;
+  color: white;
+}
+
+.get-started-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.get-started-content h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.get-started-content p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.get-started-content .get-started-btn {
+  background: white;
+  color: var(--primary-color);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 50px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.get-started-content .get-started-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Media queries para responsive */
+@media (max-width: 992px) {
+  .welcome-title {
+    font-size: 2.2rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .steps-container {
+    flex-direction: column;
+  }
+
+  .step-connector {
+    transform: rotate(90deg);
+    margin: 1rem 0;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome-section {
+    padding: 3rem 0;
+  }
+
+  .welcome-title {
+    font-size: 2rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .welcome-image {
+    margin-top: 2rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+  }
+
+  .step-card {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .welcome-section,
+  .how-to-section,
+  .features-overview,
+  .quick-tips,
+  .get-started-section {
+    padding: 2.5rem 0;
+  }
+
+  .welcome-title {
+    font-size: 1.8rem;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  .step-card,
+  .feature-overview-card,
+  .tip-card {
+    padding: 1.2rem;
+  }
+}
