@@ -1,4 +1,11 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { preprocessImage } from '../utils/imagePreprocessor';
+import {
+  processSymptoms,
+  processPatientInfo,
+  processLabResults,
+  generateEnhancedPrompt
+} from '../utils/medicalDataProcessor';
 
 // Inicializar la API de Google Gemini con la clave API desde variables de entorno
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
@@ -73,18 +80,51 @@ const fileToGenerativePart = async (file) => {
 };
 
 // Función para procesar un archivo (imagen o documento)
-export const processFile = async (file) => {
+export const processFile = async (file, options = { preprocess: true }) => {
   try {
-    // Convertir el archivo a base64
-    const filePart = await fileToGenerativePart(file);
+    let processedFile = file;
+    let preprocessingInfo = null;
+
+    // Si es una imagen y se solicita preprocesamiento, aplicarlo
+    if (file.type.startsWith('image/') && options.preprocess) {
+      console.log(`Iniciando preprocesamiento para: ${file.name}`);
+
+      // Aplicar algoritmos de preprocesamiento
+      processedFile = await preprocessImage(file, {
+        normalize: true,
+        reduceNoiseFilter: true,
+        enhanceContrastFilter: true
+      });
+
+      // Guardar información sobre el preprocesamiento
+      preprocessingInfo = {
+        original: file.name,
+        processed: processedFile.name,
+        steps: processedFile.preprocessingSteps || {}
+      };
+
+      console.log(`Preprocesamiento completado para: ${file.name}`);
+    }
+
+    // Convertir el archivo procesado a base64
+    const filePart = await fileToGenerativePart(processedFile);
+
     return {
-      file: file,
+      file: processedFile,
+      originalFile: file !== processedFile ? file : undefined,
       part: filePart,
-      mimeType: file.type,
-      isImage: file.type.startsWith('image/')
+      mimeType: processedFile.type,
+      isImage: processedFile.type.startsWith('image/'),
+      preprocessed: !!preprocessingInfo,
+      preprocessingInfo: preprocessingInfo
     };
   } catch (error) {
     console.error('Error al procesar el archivo:', error);
+    // En caso de error en el preprocesamiento, intentar procesar el archivo original
+    if (file.type.startsWith('image/') && options.preprocess) {
+      console.warn('Fallback al procesamiento sin preprocesamiento');
+      return processFile(file, { preprocess: false });
+    }
     throw error;
   }
 };
@@ -109,20 +149,51 @@ export const startConversation = async (medicalData) => {
     maxOutputTokens: 4096, // Reducido para evitar sobrecarga
   };
 
-  // Preparar el mensaje inicial basado en los datos proporcionados
+  // Procesar y estructurar los datos médicos para mejorar el contexto
+  const structuredData = {
+    hasContent: false
+  };
+
+  // Procesar imágenes médicas
+  if (medicalData.imagenes && medicalData.imagenes.length > 0) {
+    structuredData.images = medicalData.imagenes;
+    structuredData.hasContent = true;
+  }
+
+  // Procesar resultados de laboratorio
+  if (medicalData.laboratorio && medicalData.laboratorio.length > 0) {
+    structuredData.labResults = processLabResults(medicalData.laboratorio);
+    structuredData.hasContent = true;
+  }
+
+  // Procesar historial médico
+  if (medicalData.historial && medicalData.historial.part) {
+    structuredData.medicalHistory = medicalData.historial;
+    structuredData.hasContent = true;
+  }
+
+  // Procesar información del paciente
+  if (medicalData.paciente) {
+    structuredData.patientInfo = processPatientInfo(medicalData.paciente);
+  }
+
+  // Procesar síntomas
+  if (medicalData.sintomas && medicalData.sintomas.trim() !== '') {
+    structuredData.symptoms = processSymptoms(medicalData.sintomas);
+    structuredData.symptomsText = medicalData.sintomas;
+  }
+
+  // Preparar el mensaje inicial basado en los datos estructurados
   const parts = [];
   let promptText = "";
-  let hasContent = false;
 
   // Agregar imágenes médicas si existen
-  if (medicalData.imagenes && medicalData.imagenes.length > 0) {
-    for (const imagen of medicalData.imagenes) {
+  if (structuredData.images) {
+    for (const imagen of structuredData.images) {
       if (imagen.part) {
         parts.push(imagen.part);
-        hasContent = true;
       }
     }
-    promptText += "Analiza estas imágenes médicas. ";
   }
 
   // Agregar resultados de laboratorio si existen
@@ -130,41 +201,20 @@ export const startConversation = async (medicalData) => {
     for (const labResult of medicalData.laboratorio) {
       if (labResult.part) {
         parts.push(labResult.part);
-        hasContent = true;
       }
     }
-    promptText += "Analiza estos resultados de laboratorio. ";
   }
 
   // Agregar historial médico si existe
   if (medicalData.historial && medicalData.historial.part) {
     parts.push(medicalData.historial.part);
-    promptText += "Analiza este historial médico. ";
-    hasContent = true;
   }
 
-  // Agregar información del paciente si existe
-  if (medicalData.paciente) {
-    const { nombre, edad, genero, antecedentes } = medicalData.paciente;
-    if (nombre || edad || genero || antecedentes) {
-      promptText += "Información del paciente: ";
-      if (nombre) promptText += `Nombre: ${nombre}. `;
-      if (edad) promptText += `Edad: ${edad} años. `;
-      if (genero) promptText += `Género: ${genero}. `;
-      if (antecedentes) promptText += `Antecedentes médicos: ${antecedentes}. `;
-    }
-  }
-
-  // Agregar síntomas si existen
-  if (medicalData.sintomas && medicalData.sintomas.trim() !== '') {
-    promptText += `Síntomas reportados: ${medicalData.sintomas}. `;
-  }
-
-  // Si no hay texto específico, usar un prompt genérico
-  if (promptText === "" || !hasContent) {
-    promptText = "¿Qué puedes ver en la información médica proporcionada? Por favor, analiza todos los datos disponibles.";
+  // Generar un prompt mejorado basado en los datos estructurados
+  if (structuredData.hasContent) {
+    promptText = generateEnhancedPrompt(structuredData);
   } else {
-    promptText += "Por favor, proporciona un análisis médico detallado basado en toda la información disponible.";
+    promptText = "¿Qué puedes ver en la información médica proporcionada? Por favor, analiza todos los datos disponibles.";
   }
 
   // Agregar el texto del prompt

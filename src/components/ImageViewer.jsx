@@ -85,28 +85,6 @@ const ImageViewer = ({ images, activeIndex, onSelectImage }) => {
         >
           {fullscreen ? <FaCompress /> : <FaExpand />}
         </button>
-
-        <div className="image-controls">
-          {/* Estos botones son decorativos por ahora, pero podrían implementarse en el futuro */}
-          <button className="image-control-button" title="Zoom In">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-              <path d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
-            </svg>
-          </button>
-          <button className="image-control-button" title="Ajustar Contraste">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M8 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm4 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM5.5 7a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
-              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-1 0A7 7 0 1 0 1 8a7 7 0 0 0 14 0z"/>
-            </svg>
-          </button>
-          <button className="image-control-button" title="Rotar Imagen">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-              <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-            </svg>
-          </button>
-        </div>
       </div>
 
       <div className="image-info">
@@ -126,7 +104,51 @@ const ImageViewer = ({ images, activeIndex, onSelectImage }) => {
               : 'Imagen médica'}
           </span>
         </div>
+        {images[activeIndex]?.preprocessed && (
+          <div className="image-info-detail preprocessing-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M9.663 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5H9.5a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h.163zm-4.5 1a.5.5 0 0 1 .5-.5h.163a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5H5.663a.5.5 0 0 1-.5-.5v-7zm-2.5 2a.5.5 0 0 1 .5-.5h.163a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5H3.163a.5.5 0 0 1-.5-.5v-3zm8.5 0a.5.5 0 0 1 .5-.5h.163a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5H11.663a.5.5 0 0 1-.5-.5v-3z"/>
+            </svg>
+            <span title="Imagen mejorada con algoritmos de preprocesamiento">Preprocesada</span>
+          </div>
+        )}
       </div>
+
+      {images[activeIndex]?.preprocessed && (
+        <div className="preprocessing-info">
+          <div className="preprocessing-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+              <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
+              <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
+            </svg>
+            <span>Mejoras aplicadas</span>
+          </div>
+          <div className="preprocessing-steps">
+            {images[activeIndex]?.preprocessingInfo?.steps?.normalize && (
+              <div className="preprocessing-step">
+                <span className="step-icon">✓</span>
+                <span className="step-name">Normalización</span>
+                <span className="step-description">Ajuste de brillo y contraste</span>
+              </div>
+            )}
+            {images[activeIndex]?.preprocessingInfo?.steps?.reduceNoiseFilter && (
+              <div className="preprocessing-step">
+                <span className="step-icon">✓</span>
+                <span className="step-name">Reducción de ruido</span>
+                <span className="step-description">Filtrado para mejorar claridad</span>
+              </div>
+            )}
+            {images[activeIndex]?.preprocessingInfo?.steps?.enhanceContrastFilter && (
+              <div className="preprocessing-step">
+                <span className="step-icon">✓</span>
+                <span className="step-name">Mejora de contraste</span>
+                <span className="step-description">Ecualización para destacar detalles</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {images.length > 1 && (
         <div className="image-thumbnails">

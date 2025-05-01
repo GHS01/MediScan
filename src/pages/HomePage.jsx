@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { FaClock, FaGlobe, FaRobot, FaCogs, FaUsers, FaChartLine, FaShieldAlt, FaUserMd, FaHospital, FaSearch, FaFileAlt, FaGlobeAmericas } from 'react-icons/fa';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
@@ -47,8 +48,8 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="hero-buttons"
         >
-          <button className="btn-primary">Comenzar ahora</button>
-          <button className="btn-secondary">Ver demostración</button>
+          <Link to="/app" className="btn-primary hero-btn">Comenzar ahora</Link>
+          <Link to="/app" className="btn-secondary hero-btn">Ver demostración</Link>
         </motion.div>
       </div>
       <motion.div
@@ -520,8 +521,8 @@ const CallToAction = () => {
             Únase a los miles de profesionales médicos que ya están utilizando MediScan AI para mejorar sus diagnósticos y la atención a sus pacientes.
           </p>
           <div className="cta-buttons">
-            <button className="btn-primary">Comenzar ahora</button>
-            <button className="btn-secondary">Solicitar demostración</button>
+            <Link to="/app" className="btn-primary hero-btn">Comenzar ahora</Link>
+            <Link to="/app" className="btn-secondary hero-btn">Solicitar demostración</Link>
           </div>
         </motion.div>
 

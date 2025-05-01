@@ -40,8 +40,14 @@ function Layout() {
                 <Link to="/perfil" className={`nav-link ${isActive('/perfil')}`}>Mi Perfil</Link>
               </div>
 
-              <button className="mobile-menu-toggle" onClick={toggleMobileMenu} aria-label="Menú">
-                <span className="hamburger-icon"></span>
+              <button
+                className={`mobile-menu-toggle ${mobileMenuOpen ? 'active' : ''}`}
+                onClick={toggleMobileMenu}
+                aria-label="Menú"
+              >
+                <span className="hamburger-line"></span>
+                <span className="hamburger-line"></span>
+                <span className="hamburger-line"></span>
               </button>
             </div>
           </nav>
