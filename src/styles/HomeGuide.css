@@ -136,11 +136,17 @@
   margin-bottom: 1.5rem;
   color: var(--primary-color);
   font-size: 2rem;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .step-icon .icon {
   font-size: 2rem;
   color: var(--primary-color);
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .step-title {
@@ -157,7 +163,7 @@
 }
 
 .step-tip {
-  background-color: rgba(0, 120, 215, 0.05);
+  background-color: rgba(240, 249, 255, 0.7);
   border-radius: var(--border-radius);
   padding: 1rem;
   display: flex;
