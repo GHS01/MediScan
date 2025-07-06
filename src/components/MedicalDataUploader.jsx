@@ -17,6 +17,10 @@ import {
   FaPlus,
   FaTimes
 } from 'react-icons/fa';
+import ImageContextSelector from './ImageContextSelector';
+import ImageRelationshipViewer from './ImageRelationshipViewer';
+import UniversalLabInput from './UniversalLabInput';
+import { detectImageContext } from '../utils/imageContextAnalyzer';
 
 const MedicalDataUploader = ({ onDataUpload, isLoading }) => {
   const [activeTab, setActiveTab] = useState('imagenes');
@@ -27,12 +31,17 @@ const MedicalDataUploader = ({ onDataUpload, isLoading }) => {
     sintomas: '',
     laboratorio: []
   });
+  const [labValues, setLabValues] = useState(null);
   const [patientInfo, setPatientInfo] = useState({
     nombre: '',
     edad: '',
     genero: '',
     antecedentes: ''
   });
+
+  // Estados para el análisis de contexto de imágenes
+  const [imageContext, setImageContext] = useState(null);
+  const [isAnalyzingContext, setIsAnalyzingContext] = useState(false);
 
   // Tipos de imágenes médicas
   const imageTypes = [
@@ -73,7 +82,7 @@ const MedicalDataUploader = ({ onDataUpload, isLoading }) => {
   };
 
   // Función para procesar los archivos según el tipo
-  const handleFiles = (files, type) => {
+  const handleFiles = async (files, type) => {
     if (type === 'imagenes') {
       // Filtrar solo archivos de imagen
       const imageFiles = Array.from(files).filter(file =>
@@ -81,10 +90,28 @@ const MedicalDataUploader = ({ onDataUpload, isLoading }) => {
       );
 
       if (imageFiles.length > 0) {
+        const updatedImages = [...selectedFiles.imagenes, ...imageFiles];
+
         setSelectedFiles(prev => ({
           ...prev,
-          imagenes: [...prev.imagenes, ...imageFiles]
+          imagenes: updatedImages
         }));
+
+        // Analizar contexto automáticamente si hay múltiples imágenes
+        if (updatedImages.length > 1) {
+          setIsAnalyzingContext(true);
+          try {
+            const context = await detectImageContext(updatedImages);
+            setImageContext(context);
+            console.log('Contexto detectado automáticamente:', context);
+          } catch (error) {
+            console.error('Error al detectar contexto:', error);
+          } finally {
+            setIsAnalyzingContext(false);
+          }
+        } else {
+          setImageContext(null);
+        }
       }
     } else if (type === 'historial') {
       // Para historial médico, solo permitimos un archivo
@@ -133,12 +160,29 @@ const MedicalDataUploader = ({ onDataUpload, isLoading }) => {
   };
 
   // Función para eliminar un archivo
-  const removeFile = (type, index) => {
+  const removeFile = async (type, index) => {
     if (type === 'imagenes') {
+      const updatedImages = selectedFiles.imagenes.filter((_, i) => i !== index);
+
       setSelectedFiles(prev => ({
         ...prev,
-        imagenes: prev.imagenes.filter((_, i) => i !== index)
+        imagenes: updatedImages
       }));
+
+      // Re-analizar contexto si quedan múltiples imágenes
+      if (updatedImages.length > 1) {
+        setIsAnalyzingContext(true);
+        try {
+          const context = await detectImageContext(updatedImages);
+          setImageContext(context);
+        } catch (error) {
+          console.error('Error al re-analizar contexto:', error);
+        } finally {
+          setIsAnalyzingContext(false);
+        }
+      } else {
+        setImageContext(null);
+      }
     } else if (type === 'historial') {
       setSelectedFiles(prev => ({
         ...prev,
@@ -160,7 +204,8 @@ const MedicalDataUploader = ({ onDataUpload, isLoading }) => {
       historial: selectedFiles.historial,
       sintomas: selectedFiles.sintomas,
       laboratorio: selectedFiles.laboratorio,
-      paciente: patientInfo
+      paciente: patientInfo,
+      valoresLaboratorio: labValues // Incluir valores de laboratorio manuales
     };
 
     // Llamar a la función de carga proporcionada por el componente padre
@@ -282,6 +327,42 @@ const MedicalDataUploader = ({ onDataUpload, isLoading }) => {
                     ))}
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Componentes de análisis de contexto */}
+            {selectedFiles.imagenes.length > 1 && (
+              <div className="mt-4 space-y-4">
+                {/* Indicador de análisis en progreso */}
+                {isAnalyzingContext && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-center">
+                      <FaSpinner className="animate-spin mr-3 text-blue-600" />
+                      <span className="text-blue-800 font-medium">
+                        Analizando contexto entre imágenes...
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Visualizador de relaciones */}
+                {imageContext && (
+                  <ImageRelationshipViewer
+                    images={selectedFiles.imagenes}
+                    context={imageContext}
+                    className="mb-4"
+                  />
+                )}
+
+                {/* Selector de contexto */}
+                <ImageContextSelector
+                  images={selectedFiles.imagenes}
+                  detectedContext={imageContext}
+                  onContextChange={(newContext) => {
+                    setImageContext(newContext);
+                    console.log('Contexto actualizado:', newContext);
+                  }}
+                />
               </div>
             )}
           </div>
@@ -493,9 +574,15 @@ const MedicalDataUploader = ({ onDataUpload, isLoading }) => {
                 </svg>
               </div>
               <div className="context-info-text">
-                <p>Los resultados de laboratorio proporcionan datos objetivos que complementan los hallazgos visuales, permitiendo un análisis más completo y preciso.</p>
+                <p>Los resultados de laboratorio proporcionan datos objetivos que complementan los hallazgos visuales. Puedes subir archivos o ingresar valores específicos manualmente.</p>
               </div>
             </div>
+
+            {/* Entrada manual de valores de laboratorio */}
+            <UniversalLabInput
+              onLabValuesChange={setLabValues}
+              patientData={patientInfo}
+            />
 
             <div
               className={`upload-area lab-upload ${dragActive ? 'active' : ''}`}

@@ -68,7 +68,7 @@ const LandingNav = () => {
       <div className="landing-nav-container">
         <div className="landing-nav-logo">
           <Link to="/">
-            <img src="images/symbol.png" alt="MediScan Logo" className="logo-image" />
+            <img src="images/logo.png" alt="MediScan Logo" className="logo-image" />
             <span className="logo-text">MediScan AI</span>
           </Link>
         </div>

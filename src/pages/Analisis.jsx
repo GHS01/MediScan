@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import MedicalDataUploader from '../components/MedicalDataUploader';
 import ImageViewer from '../components/ImageViewer';
 import Conversation from '../components/Conversation';
+import StructuredResultsViewer from '../components/StructuredResultsViewer';
 import { processFile, startConversation, sendMessage } from '../services/geminiService';
 
 function Analisis() {
@@ -12,6 +13,8 @@ function Analisis() {
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [analysisResult, setAnalysisResult] = useState('');
+  const [imageContext, setImageContext] = useState(null);
 
   // Función para manejar la carga de datos médicos
   const handleDataUpload = async (data) => {
@@ -92,9 +95,22 @@ function Analisis() {
 
       // Iniciar la conversación con los datos médicos
       try {
-        const { chat, history: initialHistory, modelUsed } = await startConversation(medicalData);
+        const { chat, history: initialHistory, modelUsed, imageContext: detectedContext } = await startConversation(medicalData);
         setConversation(chat);
         setHistory(initialHistory);
+
+        // Guardar el contexto de imágenes y resultado del análisis
+        if (detectedContext) {
+          setImageContext(detectedContext);
+        }
+
+        // Extraer el resultado del análisis para el visualizador estructurado
+        if (initialHistory && initialHistory.length > 0) {
+          const lastMessage = initialHistory[initialHistory.length - 1];
+          if (lastMessage && lastMessage.parts && lastMessage.parts[0]) {
+            setAnalysisResult(lastMessage.parts[0].text || '');
+          }
+        }
 
         // Mostrar qué modelo se está usando (si está disponible)
         if (modelUsed) {
@@ -251,13 +267,28 @@ function Analisis() {
           </div>
           <div className="col-lg-6">
             {history.length > 0 ? (
-              <Conversation
-                history={history}
-                onSendMessage={handleSendMessage}
-                isLoading={isLoading}
-                patientInfo={uploadedFiles.length > 0 ? uploadedFiles[0].patientInfo : null}
-                uploadedFiles={uploadedFiles}
-              />
+              <div className="analysis-results-container">
+                {/* Visualizador de resultados estructurados para múltiples imágenes */}
+                {images.length > 1 && analysisResult && (
+                  <div className="mb-4">
+                    <StructuredResultsViewer
+                      analysisResult={analysisResult}
+                      imageContext={imageContext}
+                      images={images}
+                      className="mb-4"
+                    />
+                  </div>
+                )}
+
+                {/* Conversación tradicional */}
+                <Conversation
+                  history={history}
+                  onSendMessage={handleSendMessage}
+                  isLoading={isLoading}
+                  patientInfo={uploadedFiles.length > 0 ? uploadedFiles[0].patientInfo : null}
+                  uploadedFiles={uploadedFiles}
+                />
+              </div>
             ) : (
               <div className="conversation-placeholder">
                 <p>Proporciona imágenes médicas, resultados de laboratorio u otra información médica para comenzar el análisis</p>

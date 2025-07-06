@@ -40,6 +40,9 @@
   width: 32px;
   height: 32px;
   object-fit: contain;
+  /* Filtros para eliminar fondo blanco y mejorar visibilidad */
+  filter: contrast(1.1) saturate(1.2);
+  background: transparent;
 }
 
 .logo-text {

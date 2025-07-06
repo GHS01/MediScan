@@ -6,6 +6,9 @@ import {
   processLabResults,
   generateEnhancedPrompt
 } from '../utils/medicalDataProcessor';
+import { detectImageContext, getContextDescription } from '../utils/imageContextAnalyzer';
+import { generateOptimizedPrompt } from '../utils/medicalPromptGenerator';
+import { generateUniversalLabPrompt, processLabAnalysisResult } from '../utils/universalLabAnalyzer';
 
 // Inicializar la API de Google Gemini con la clave API desde variables de entorno
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
@@ -151,18 +154,32 @@ export const startConversation = async (medicalData) => {
 
   // Procesar y estructurar los datos médicos para mejorar el contexto
   const structuredData = {
-    hasContent: false
+    hasContent: false,
+    imageContext: null
   };
 
-  // Procesar imágenes médicas
+  // Procesar imágenes médicas y detectar contexto
   if (medicalData.imagenes && medicalData.imagenes.length > 0) {
     structuredData.images = medicalData.imagenes;
     structuredData.hasContent = true;
+
+    // Detectar contexto automáticamente entre las imágenes
+    console.log('Detectando contexto entre imágenes médicas...');
+    const originalFiles = medicalData.imagenes.map(img => img.originalFile || img.file);
+    structuredData.imageContext = await detectImageContext(originalFiles);
+
+    console.log('Contexto detectado:', getContextDescription(structuredData.imageContext));
   }
 
-  // Procesar resultados de laboratorio
+  // Procesar resultados de laboratorio (archivos)
   if (medicalData.laboratorio && medicalData.laboratorio.length > 0) {
     structuredData.labResults = processLabResults(medicalData.laboratorio);
+    structuredData.hasContent = true;
+  }
+
+  // Procesar valores de laboratorio manuales
+  if (medicalData.valoresLaboratorio) {
+    structuredData.manualLabValues = medicalData.valoresLaboratorio;
     structuredData.hasContent = true;
   }
 
@@ -210,9 +227,19 @@ export const startConversation = async (medicalData) => {
     parts.push(medicalData.historial.part);
   }
 
-  // Generar un prompt mejorado basado en los datos estructurados
-  if (structuredData.hasContent) {
+  // Generar un prompt optimizado basado en el contexto detectado
+  if (structuredData.hasContent && structuredData.imageContext) {
+    // Usar el nuevo generador de prompts contextuales
+    promptText = generateOptimizedPrompt(structuredData.imageContext, medicalData);
+    console.log('Usando prompt optimizado para contexto:', structuredData.imageContext.relationship);
+  } else if (structuredData.hasContent) {
+    // Fallback al prompt tradicional con mejoras para laboratorio
     promptText = generateEnhancedPrompt(structuredData);
+
+    // Agregar contexto de valores de laboratorio manuales si existen
+    if (structuredData.manualLabValues) {
+      promptText += generateLabValuesContext(structuredData.manualLabValues);
+    }
   } else {
     promptText = "¿Qué puedes ver en la información médica proporcionada? Por favor, analiza todos los datos disponibles.";
   }
@@ -274,7 +301,8 @@ export const startConversation = async (medicalData) => {
             parts: [{ text: response.text() }]
           }
         ],
-        modelUsed: modelName
+        modelUsed: modelName,
+        imageContext: structuredData.imageContext // Incluir contexto para referencia
       };
     } catch (error) {
       lastError = error;
@@ -380,4 +408,47 @@ export const sendMessage = async (chat, message, uploadedFile = null) => {
     'Si el problema persiste, puedes intentar con una pregunta diferente o contactar al soporte.';
 
   throw new Error(errorMessage);
+};
+
+/**
+ * Genera contexto adicional para valores de laboratorio manuales
+ * @param {Object} labValues - Valores de laboratorio ingresados manualmente
+ * @returns {string} Contexto adicional para el prompt
+ */
+const generateLabValuesContext = (labValues) => {
+  if (!labValues || (!labValues.values && !labValues.customParameters)) {
+    return '';
+  }
+
+  let context = '\n\n=== VALORES DE LABORATORIO ESPECÍFICOS ===\n';
+
+  if (labValues.category && labValues.subcategory) {
+    context += `TIPO DE ANÁLISIS: ${labValues.category} - ${labValues.subcategory}\n\n`;
+  }
+
+  // Procesar valores estándar
+  if (labValues.values && Object.keys(labValues.values).length > 0) {
+    context += 'VALORES INGRESADOS:\n';
+    Object.entries(labValues.values).forEach(([parameter, value]) => {
+      if (value) {
+        context += `- ${parameter}: ${value}\n`;
+      }
+    });
+  }
+
+  // Procesar parámetros personalizados
+  if (labValues.customParameters && labValues.customParameters.length > 0) {
+    context += '\nPARÁMETROS ADICIONALES:\n';
+    labValues.customParameters.forEach(param => {
+      context += `- ${param.name}: ${param.value} ${param.unit}\n`;
+    });
+  }
+
+  context += '\nINSTRUCCIONES ESPECÍFICAS:\n';
+  context += '- Evalúa cada valor según los rangos normales apropiados para la edad y género del paciente\n';
+  context += '- Identifica cualquier valor anormal y explica su significado clínico\n';
+  context += '- Correlaciona estos valores con los síntomas reportados y hallazgos en imágenes\n';
+  context += '- Proporciona interpretación integral considerando todos los datos de laboratorio\n';
+
+  return context;
 };

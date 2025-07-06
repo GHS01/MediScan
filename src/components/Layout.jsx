@@ -21,7 +21,7 @@ function Layout() {
         <div className="header-content">
           <div className="header-brand">
             <Link to="/app" className="brand-link">
-              <img src="images/symbol.png" alt="MediScan Logo" className="brand-logo" />
+              <img src="images/logo.png" alt="MediScan Logo" className="brand-logo" />
               <h1 className="brand-name">MediScan AI</h1>
               <p className="brand-slogan">Análisis con Inteligencia Artificial</p>
             </Link>
@@ -70,20 +70,67 @@ function Layout() {
         <Outlet />
       </main>
 
-      <footer className="app-footer">
-        <div className="footer-content">
-          <div className="footer-logo">
-            <img src="images/symbol.png" alt="MediScan Logo" className="footer-brand-logo" />
-            <span>MediScan AI</span>
+      <footer className="app-footer-modern">
+        <div className="footer-content-modern">
+          <div className="footer-main">
+            <div className="footer-brand-section">
+              <div className="footer-logo-modern">
+                <img src="images/logo.png" alt="MediScan Logo" className="footer-brand-logo" />
+                <div className="footer-brand-text">
+                  <span className="footer-brand-name">MediScan AI</span>
+                  <span className="footer-brand-tagline">Inteligencia Artificial Médica</span>
+                </div>
+              </div>
+              <p className="footer-description">
+                Transformando el diagnóstico médico con tecnología de vanguardia y análisis precisos.
+              </p>
+            </div>
+
+            <div className="footer-links-section">
+              <div className="footer-links-group">
+                <h4 className="footer-links-title">Plataforma</h4>
+                <div className="footer-links-modern">
+                  <a href="#" className="footer-link-modern">Análisis</a>
+                  <a href="#" className="footer-link-modern">Historial</a>
+                  <a href="#" className="footer-link-modern">Biblioteca</a>
+                </div>
+              </div>
+
+              <div className="footer-links-group">
+                <h4 className="footer-links-title">Soporte</h4>
+                <div className="footer-links-modern">
+                  <a href="#" className="footer-link-modern">Ayuda</a>
+                  <a href="#" className="footer-link-modern">Contacto</a>
+                  <a href="#" className="footer-link-modern">Documentación</a>
+                </div>
+              </div>
+
+              <div className="footer-links-group">
+                <h4 className="footer-links-title">Legal</h4>
+                <div className="footer-links-modern">
+                  <a href="#" className="footer-link-modern">Términos</a>
+                  <a href="#" className="footer-link-modern">Privacidad</a>
+                  <a href="#" className="footer-link-modern">Cookies</a>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="footer-accent"></div>
-          <div className="footer-links">
-            <a href="#" className="footer-link">Términos y Condiciones</a>
-            <a href="#" className="footer-link">Política de Privacidad</a>
-            <a href="#" className="footer-link">Contacto</a>
-            <a href="#" className="footer-link">Soporte</a>
+
+          <div className="footer-bottom-modern">
+            <div className="footer-copyright-modern">
+              <p>© 2024 MediScan AI. Todos los derechos reservados.</p>
+            </div>
+            <div className="footer-tech-badge">
+              <span className="tech-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Powered by Google Gemini
+              </span>
+            </div>
           </div>
-          <p>© 2024 MediScan AI - Desarrollado con tecnología de Google Gemini</p>
         </div>
       </footer>
     </div>

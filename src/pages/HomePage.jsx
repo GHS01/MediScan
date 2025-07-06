@@ -508,21 +508,42 @@ const ValueSection = () => {
 // Call to Action
 const CallToAction = () => {
   return (
-    <section className="cta-section">
-      <div className="cta-container">
+    <section className="cta-section-modern">
+      <div className="cta-background-elements">
+        <div className="floating-element element-1"></div>
+        <div className="floating-element element-2"></div>
+        <div className="floating-element element-3"></div>
+      </div>
+
+      <div className="cta-container-modern">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="cta-content"
+          className="cta-content-modern"
         >
-          <h2 className="cta-title">Transforme su práctica médica hoy</h2>
-          <p className="cta-description">
-            Únase a los miles de profesionales médicos que ya están utilizando MediScan AI para mejorar sus diagnósticos y la atención a sus pacientes.
+          <h2 className="cta-title-modern">
+            Transforme su práctica médica <span className="highlight-text">hoy</span>
+          </h2>
+
+          <p className="cta-description-modern">
+            Únase a los miles de profesionales médicos que ya están utilizando MediScan AI
+            para mejorar sus diagnósticos y la atención a sus pacientes.
           </p>
-          <div className="cta-buttons">
-            <Link to="/app" className="btn-primary hero-btn">Comenzar ahora</Link>
-            <Link to="/app" className="btn-secondary hero-btn">Solicitar demostración</Link>
+
+          <div className="cta-stats">
+            <div className="stat-item">
+              <div className="stat-number">10,000+</div>
+              <div className="stat-label">Médicos activos</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">50,000+</div>
+              <div className="stat-label">Análisis realizados</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">98%</div>
+              <div className="stat-label">Precisión diagnóstica</div>
+            </div>
           </div>
         </motion.div>
 
@@ -530,22 +551,45 @@ const CallToAction = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="cta-testimonial"
+          className="cta-testimonial-modern"
         >
-          <div className="testimonial-content simple">
-
-            <p className="testimonial-text">
-              MediScan AI ha revolucionado nuestra práctica clínica. Los diagnósticos son más rápidos y precisos, permitiéndonos atender a más pacientes con mayor confianza.
-            </p>
-            <div className="testimonial-author">
-              <img src="images/paula.jpg" alt="Dra. Jiménez" className="author-avatar" />
-              <div className="author-info">
-                <h4 className="author-name">Dra. Paula Jiménez</h4>
-                <p className="author-title">Jefe de Radiología, Hospital Central</p>
+          <div className="testimonial-card-modern">
+            <div className="testimonial-header">
+              <div className="testimonial-quote-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 21C3 17.134 3 15.201 3.879 13.879C4.757 12.557 6.172 12.172 9 12H10V9C10 6.791 10 5.687 10.659 4.843C11.318 4 12.172 4 14 4H15C17.828 4 18.243 4.757 18.879 6.121C19.515 7.485 19.134 9.172 18 12L15 21H3Z" stroke="currentColor" strokeWidth="2"/>
+                </svg>
+              </div>
+              <div className="testimonial-rating-modern">
+                <div className="stars">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                    </svg>
+                  ))}
+                </div>
+                <span className="rating-text">5.0</span>
               </div>
             </div>
-            <div className="testimonial-rating">
-              ★★★★★
+
+            <p className="testimonial-text-modern">
+              MediScan AI ha revolucionado nuestra práctica clínica. Los diagnósticos son más rápidos y precisos,
+              permitiéndonos atender a más pacientes con mayor confianza.
+            </p>
+
+            <div className="testimonial-author-modern">
+              <div className="author-avatar-modern">
+                <img src="images/paula.jpg" alt="Dra. Jiménez" />
+              </div>
+              <div className="author-info-modern">
+                <h4 className="author-name-modern">Dra. Paula Jiménez</h4>
+                <p className="author-title-modern">Jefe de Radiología, Hospital Central</p>
+              </div>
+              <div className="verified-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
             </div>
           </div>
         </motion.div>
